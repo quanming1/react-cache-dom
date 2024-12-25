@@ -1,6 +1,6 @@
 {
   "name": "jqm-pck",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "jqm-pck",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
