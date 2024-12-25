@@ -1,16 +1,12 @@
 {
-  "name": "my-npm-package",
+  "name": "jqm-pck",
   "version": "1.0.0",
-  "description": "你的包描述",
+  "description": "jqm-pck",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "test": "jest",
-    "prepare": "npm run build"
-  },
+  "scripts": {},
   "keywords": [],
-  "author": "你的名字",
+  "author": "jqm",
   "license": "MIT",
   "files": [
     "dist"
