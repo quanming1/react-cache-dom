@@ -57,6 +57,7 @@ const createContainer = (
  * @param props.onCacheMiss - 缓存未命中时的回调
  * @param ref - 用于暴露clearCache方法的ref
  */
+// @ts-ignore
 const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function CacheDom(
   { cacheKey, children, disabled = false, deps = [], onCacheHit, onCacheMiss },
   ref
