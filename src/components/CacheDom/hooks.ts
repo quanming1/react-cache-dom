@@ -1,7 +1,7 @@
 import { DependencyList, useContext, useRef } from "react";
 import { EffectCallback } from "react";
 import { useEffect, useLayoutEffect } from "react";
-import { CacheContext } from "./context";
+import { CacheDomContext } from "./context";
 import { Noop } from "./context";
 
 export function useUpdateEffect(effect: EffectCallback, deps: DependencyList) {
@@ -36,14 +36,14 @@ export function useUpdateLayoutEffect(
  * @param callback 激活时的回调函数
  */
 export function useActivated(callback: Noop) {
-  const context = useContext(CacheContext);
+  const context = useContext(CacheDomContext);
   if (!context) {
     console.warn("请在CacheGroup组件中使用useActivated");
     return;
   }
 
-  useUpdateLayoutEffect(() => {
-    callback();
+  useLayoutEffect(() => {
+    context.registerActiveCallback(callback);
   }, []);
 }
 
@@ -52,9 +52,13 @@ export function useActivated(callback: Noop) {
  * @param callback 失活时的回调函数
  */
 export function useDeactivated(callback: Noop) {
+  const context = useContext(CacheDomContext);
+  if (!context) {
+    console.warn("请在CacheDom组件中使用useDeactivated");
+    return;
+  }
+
   useLayoutEffect(() => {
-    return () => {
-      callback();
-    };
+    context.registerDeactiveCallback(callback);
   }, []);
 }
