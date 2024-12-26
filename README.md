@@ -19,13 +19,13 @@ CacheDom 是一个用于 React 应用的高性能 DOM 缓存组件。它通过�
 
 ```bash
 # npm
-npm install cache-dom
+npm install react-cache-dom
 
 # yarn
-yarn add cache-dom
+yarn add react-cache-dom
 
 # pnpm
-pnpm add cache-dom
+pnpm add react-cache-dom
 ```
 
 ## 基础用法
@@ -33,7 +33,7 @@ pnpm add cache-dom
 ### 简单示例
 
 ```tsx
-import { CacheGroup, CacheDom } from "cache-dom";
+import { CacheGroup, CacheDom } from "react-cache-dom";
 
 function App() {
   const [show, setShow] = useState(true);
