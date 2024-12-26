@@ -88,13 +88,11 @@ const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function (
 
   // 激活回调
   const handleActive = useCallback(() => {
-    onCacheHit?.();
     activeCallbackRef.current.forEach((callback) => callback?.());
   }, []);
 
   // 失活回调
   const handleDeactive = useCallback(() => {
-    onCacheMiss?.();
     deactiveCallbackRef.current.forEach((callback) => callback?.());
   }, []);
 
@@ -111,11 +109,16 @@ const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function (
       const root = createRoot(containerRef.current);
       rootCache.set(cacheKey, root);
       root.render(<>{children}</>);
-      handleActive();
+      onCacheMiss?.();
     } else {
       containerRef.current.appendChild(domCache.get(cacheKey)!);
-      handleDeactive();
+      onCacheHit?.();
     }
+
+    handleActive();
+    return () => {
+      handleDeactive();
+    };
   }, [cacheKey, disabled]);
 
   // 当deps变化时更新已缓存的内容
