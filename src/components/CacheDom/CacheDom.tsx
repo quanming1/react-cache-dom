@@ -4,9 +4,8 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useContext,
-  useCallback,
 } from "react";
-import { CacheContext, CacheDomContext, Noop } from "./context";
+import { CacheContext } from "./context";
 import { useUpdateLayoutEffect } from "./hooks";
 import { createRoot } from "react-dom/client";
 
@@ -58,8 +57,7 @@ const createContainer = (
  * @param props.onCacheMiss - 缓存未命中时的回调
  * @param ref - 用于暴露clearCache方法的ref
  */
-// @ts-ignore
-const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function (
+const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function CacheDom(
   { cacheKey, children, disabled = false, deps = [], onCacheHit, onCacheMiss },
   ref
 ) {
@@ -69,32 +67,9 @@ const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function (
     createContainer(cacheKey, containerRef)
   );
 
-  const activeCallbackRef = useRef<Noop[]>([]);
-  const deactiveCallbackRef = useRef<Noop[]>([]);
-
   if (!context) {
-    throw new Error("[CacheDom] CacheDom 必须在 CacheGroup 中使用");
+    throw new Error("CacheDom 必须在 CacheGroup 中使用");
   }
-
-  // 注册激活回调
-  const registerActiveCallback = useCallback((callback: Noop) => {
-    activeCallbackRef.current.push(callback);
-  }, []);
-
-  // 注册失活回调
-  const registerDeactiveCallback = useCallback((callback: Noop) => {
-    deactiveCallbackRef.current.push(callback);
-  }, []);
-
-  // 激活回调
-  const handleActive = useCallback(() => {
-    activeCallbackRef.current.forEach((callback) => callback?.());
-  }, []);
-
-  // 失活回调
-  const handleDeactive = useCallback(() => {
-    deactiveCallbackRef.current.forEach((callback) => callback?.());
-  }, []);
 
   const { domCache, rootCache } = context;
 
@@ -114,11 +89,6 @@ const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function (
       containerRef.current.appendChild(domCache.get(cacheKey)!);
       onCacheHit?.();
     }
-
-    handleActive();
-    return () => {
-      handleDeactive();
-    };
   }, [cacheKey, disabled]);
 
   // 当deps变化时更新已缓存的内容
@@ -131,13 +101,7 @@ const CacheDom = forwardRef<CacheDomRef, CacheDomProps>(function (
     }
   }, [...deps, cacheKey]);
 
-  return (
-    <CacheDomContext.Provider
-      value={{ registerActiveCallback, registerDeactiveCallback }}
-    >
-      {current}
-    </CacheDomContext.Provider>
-  );
+  return current;
 });
 
 export { CacheDom };
