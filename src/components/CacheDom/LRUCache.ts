@@ -44,6 +44,12 @@ export class LRUCache<K, V> {
     this.keyOrder = this.keyOrder.filter((k) => k !== key);
   }
 
+  forEach(callback: (value: V, key: K) => void): void {
+    this.cache.forEach((value, key) => {
+      callback(value, key);
+    });
+  }
+
   clear(): void {
     this.cache.clear();
     this.keyOrder = [];
