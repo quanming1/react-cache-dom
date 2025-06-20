@@ -16,6 +16,14 @@ const webpackConfig: Configuration = {
   resolve: {
     extensions: [".ts", ".tsx", "..."],
   },
+  externals: {
+    react: {
+      commonjs: "react",
+      commonjs2: "react",
+      amd: "react",
+      root: "React",
+    },
+  },
   module: {
     rules: [
       {
