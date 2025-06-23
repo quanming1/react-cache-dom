@@ -1,7 +1,7 @@
 import { Configuration } from "webpack";
 import path from "path";
 
-function resolve(p: string) {
+function resolve(p: string): string {
   return path.resolve(__dirname, p);
 }
 
@@ -11,10 +11,13 @@ const webpackConfig: Configuration = {
   output: {
     path: resolve("./dist"),
     filename: "index.js",
+    library: "react-cache-dom",
+    libraryTarget: "umd",
+    globalObject: "this",
     clean: true,
   },
   resolve: {
-    extensions: [".ts", ".tsx", "..."],
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
   externals: {
     react: {
@@ -23,16 +26,23 @@ const webpackConfig: Configuration = {
       amd: "react",
       root: "React",
     },
+    "react-dom": {
+      commonjs: "react-dom",
+      commonjs2: "react-dom",
+      amd: "react-dom",
+      root: "ReactDOM",
+    },
   },
   module: {
     rules: [
       {
-        test: /\.(ts|tsx|js|jsx)$/,
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: "babel-loader",
             options: {
-              presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
+              presets: [["@babel/preset-env", { targets: "defaults" }], "@babel/preset-react", "@babel/preset-typescript"],
             },
           },
         ],

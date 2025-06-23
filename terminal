@@ -1,3 +1,0 @@
-mkdir my-npm-package
-cd my-npm-package
-npm init -y 

@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
-import { CacheContext } from './context';
-import type { Root } from 'react-dom/client';
-import { LRUCache } from './LRUCache';
+import React, { useEffect, useMemo, forwardRef, useImperativeHandle } from "react";
+import { CacheContext } from "./context";
+import type { Root } from "react-dom/client";
+import { LRUCache } from "./LRUCache";
 
 interface CacheGroupProps {
   children: React.ReactNode;
@@ -22,23 +22,17 @@ export const CacheGroup = forwardRef<CacheGroupRef, CacheGroupProps>(function Ca
     return {
       domCache,
       rootCache,
-      groupId: groupId
+      groupId: groupId,
     };
   }, [groupId, capacity]);
 
   useImperativeHandle(ref, () => ({
-    clearCache: (key, { unmount = true } = {}) => {
-      const clearRoot = (root: Root) => {
-        if (unmount) {
-          root.unmount();
-        }
-      };
-
+    clearCache: (key) => {
       if (key) {
         const root = contextValue.rootCache.get(key);
         if (root) {
           Promise.resolve().then(() => {
-            clearRoot(root);
+            root.unmount();
             contextValue.rootCache.delete(key);
           });
         }
@@ -46,13 +40,18 @@ export const CacheGroup = forwardRef<CacheGroupRef, CacheGroupProps>(function Ca
       } else {
         // 清除所有缓存
         Promise.resolve().then(() => {
-          contextValue.rootCache.forEach(clearRoot);
+          contextValue.rootCache.forEach((root) => {
+            root.unmount();
+          });
+          contextValue.domCache.forEach((dom) => {
+            dom.remove();
+          });
           contextValue.domCache.clear();
           contextValue.rootCache.clear();
         });
       }
     },
-    getCacheKeys: () => contextValue.domCache.keys()
+    getCacheKeys: () => contextValue.domCache.keys(),
   }));
 
   useEffect(() => {
